@@ -1,8 +1,53 @@
 #include <unistd.h>
-#include <stdio.h>
+#include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define SERVER_PORT 8042
+
+void do_service(int sock) {
+   char buf[1024] = {0};
+   int n = read(sock, buf, sizeof(buf));
+   if (n > 0) {
+        printf("%d recveived: %s\n", n, buf);
+   }
+}
 
 int main() {
-	printf("hello, world\n");
+    // create a socket
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    
+    // set socket to share port
+    int optval = 1; 
+    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const void*)&optval, sizeof(int));
+
+    // bind socket to a local interface
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(SERVER_PORT);
+    addr.sin_addr.s_addr = INADDR_ANY;
+    bind(sock, (struct sockaddr*)&addr, sizeof(addr));
+
+    // put socket into listen mode
+    listen(sock, 1024);
+
+    // accept new connection
+    struct sockaddr_in client_addr; 
+    int sock_to_client;
+    socklen_t len_client_addr;
+    for ( ; ; ) {
+        sock_to_client = accept(sock, (struct sockaddr*)&client_addr, &len_client_addr);
+        if (sock_to_client < 0)
+            continue;
+        do_service(sock_to_client);
+        close(sock_to_client);
+    }
+
 	return 0;
 }
