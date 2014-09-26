@@ -49,6 +49,7 @@ int main() {
         sock_to_client = accept(sock, (struct sockaddr*)&client_addr, &len_client_addr);
         if (sock_to_client < 0)
             continue;
+        show_client_info(&client_addr);
         do_service(sock_to_client);
         close(sock_to_client);
     }
