@@ -10,6 +10,10 @@
 
 #define SERVER_PORT 8042
 
+void show_client_info(struct sockaddr_in* client_addr) {
+    printf("%s : %d\n", inet_ntoa(client_addr->sin_addr), ntohs(client_addr->sin_port));
+}
+
 void do_service(int sock) {
    char buf[1024] = {0};
    int n = read(sock, buf, sizeof(buf));
