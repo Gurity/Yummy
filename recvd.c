@@ -15,11 +15,23 @@ void show_client_info(struct sockaddr_in* client_addr) {
 }
 
 void do_service(int sock) {
-   char buf[1024] = {0};
-   int n = read(sock, buf, sizeof(buf));
-   if (n > 0) {
+    char buf[1024] = {0};
+    int n;
+    /*
+    int n = read(sock, buf, sizeof(buf));
+    if (n > 0) {
         printf("%d recveived: %s\n", n, buf);
-   }
+    }
+    */
+    n = 0;
+    char c;
+    while (read(sock, &c, 1) > 0) {
+        buf[n++] = c;
+        if (c == '\n')
+            break;
+    }
+    if (n > 0)
+        write(sock, buf, n);
 }
 
 int main() {
