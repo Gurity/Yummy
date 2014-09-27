@@ -56,7 +56,7 @@ int main() {
     // accept new connection
     struct sockaddr_in client_addr; 
     int sock_to_client;
-    socklen_t len_client_addr;
+    socklen_t len_client_addr = sizeof(client_addr);
     for ( ; ; ) {
         sock_to_client = accept(sock, (struct sockaddr*)&client_addr, &len_client_addr);
         if (sock_to_client < 0)
