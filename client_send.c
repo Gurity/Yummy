@@ -29,6 +29,10 @@ int main(int argc, char* argv[]) {
     // send data
     write(sock, argv[1], strlen(argv[1]));
 
+    char buf[1024 + 1] = {0};
+    int n = read(sock, buf, 1024);
+    if (n > 0)
+        printf("%s\n", buf);
 	return 0;
 }
 
