@@ -29,10 +29,15 @@ int main(int argc, char* argv[]) {
     } 
 
     // send command length
-    write(sock, &cmd_len, sizeof(cmd_len) - 1);
+    write(sock, &cmd_len, sizeof(cmd_len));
 
+    /********************************************************
+     * This will create partial read at server.
+     ******************************************************** 
+    write(sock, &cmd_len, sizeof(cmd_len) - 1);
     sleep(10);
     write(sock, (char*)&cmd_len + 3, 1);
+    */
 
     // send command string
     write(sock, cmd, cmd_len);
